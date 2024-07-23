@@ -30,13 +30,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.minhalista.component.AppbarView
-import com.example.minhalista.component.WishItem
-import com.example.minhalista.navigationConfig.Screen
-import com.example.minhalista.viewmodel.WishViewModel
+import com.example.minhalista.component.TaskItem
+import com.example.todolist.navigation.Screen
+import com.example.todolist.viewmodel.TaskViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(navController: NavHostController, viewModel: WishViewModel = viewModel()) {
+fun HomeView(navController: NavHostController, viewModel: TaskViewModel = viewModel()) {
     Scaffold(
         topBar = {
             AppbarView({}, title = "Minha Lista")
@@ -47,7 +48,7 @@ fun HomeView(navController: NavHostController, viewModel: WishViewModel = viewMo
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 onClick = {
                     //Nova tarefa, passar o id como zero porque é a primeira
-                    navController.navigate(Screen.CreateWishView.route + "/0L")
+                    navController.navigate(Screen.CreateTaskView.route + "/0L")
 
                 },
                 icon = { Icon(Icons.Filled.Add, "Criar nova Tarefa") },
@@ -55,20 +56,20 @@ fun HomeView(navController: NavHostController, viewModel: WishViewModel = viewMo
             )
         }) {
         //Pegando a lista para exibir no card
-        val wishList = viewModel.getAllWishes.collectAsState(initial = listOf())
+        val taskList = viewModel.getAllTasks.collectAsState(initial = listOf())
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
 
         ) {
-            items(wishList.value, key = { wish -> wish.id }) { wish ->
+            items(taskList.value, key = { task -> task.id }) { task ->
                 val swipeDismissState = rememberSwipeToDismissBoxState()
                 LaunchedEffect(swipeDismissState.currentValue) {
                     if (swipeDismissState.currentValue == SwipeToDismissBoxValue.StartToEnd
                         || swipeDismissState.currentValue == SwipeToDismissBoxValue.EndToStart
                     ) {
-                        viewModel.deleteWish(wish)
+                        viewModel.deleteWish(task)
                     }
                 }
                 SwipeToDismissBox(
@@ -95,10 +96,10 @@ fun HomeView(navController: NavHostController, viewModel: WishViewModel = viewMo
                         }
                     },
                     content = {
-                        WishItem(wish = wish) {
-                            val id = wish.id
+                        TaskItem(taskModel = task) {
+                            val id = task.id
                             //Navegar para proxima tela com os dados já preenchidos
-                            navController.navigate(Screen.CreateWishView.route + "/$id")
+                            navController.navigate(Screen.CreateTaskView.route + "/$id")
                         }
                     },
                     enableDismissFromStartToEnd = false,

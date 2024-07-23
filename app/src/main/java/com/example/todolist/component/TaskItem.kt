@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.todolist.data.TaskModel
 
 @Composable
-fun WishItem(taskModel: TaskModel, onClick: () -> Unit) {
+fun TaskItem(taskModel: TaskModel, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
